@@ -26,5 +26,30 @@ LoRA (Low-Rank Adaptation) was used for efficient fine-tuning.
 
 ---
 
-## 📂 Repository Structure
-(Currently under preparation. Full training code will be released soon.)
+## Training
+
+We fine-tuned **InternVL3-2B** using [ms-swift](https://github.com/modelscope/ms-swift) with LoRA.  
+Training data: ~70k rule-based QA pairs.
+
+### Command
+
+```bash
+swift sft \
+  --model OpenGVLab/InternVL3-2B \
+  --use_hf true \
+  --train_type lora \
+  --lora_rank 64 --lora_alpha 16 --lora_dropout 0.05 \
+  --dataset ./data/final_448_messages.jsonl \
+  --columns '{"messages":"messages","images":"images"}' \
+  --bf16 true --fp16 false \
+  --learning_rate 5e-5 \
+  --warmup_ratio 0.03 \
+  --per_device_train_batch_size 1 \
+  --gradient_accumulation_steps 8 \
+  --logging_steps 10 \
+  --save_steps 1000 \
+  --max_pixels 1003520 \
+  --report_to tensorboard \
+  --optim adamw_torch \
+  --logging_nan_inf_filter false
+```
